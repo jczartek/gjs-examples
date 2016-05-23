@@ -3,8 +3,8 @@
 const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;
 
-const ToogleButton = new Lang.Class ({
-  Name: 'ToggleButton',
+const ToogleButtonWindow = new Lang.Class ({
+  Name: 'ToggleButtonWindow',
   Extends: Gtk.Window,
 
   _init: function () {
@@ -47,7 +47,7 @@ const ToogleButton = new Lang.Class ({
 
 Gtk.init (null, null);
 
-var win = new ToogleButton ();
+var win = new ToogleButtonWindow ();
 win.run ();
 
 Gtk.main ();
