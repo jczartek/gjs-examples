@@ -43,8 +43,9 @@ const TextViewWidnow = new Lang.Class({
     this.grid = new Gtk.Grid();
     this.add(this.grid);
 
-    this.create_toolbar();
+
     this.create_textview();
+    this.create_toolbar();
     this.create_buttons();
   },
 
@@ -63,9 +64,11 @@ const TextViewWidnow = new Lang.Class({
     let button_underline = new Gtk.ToolButton();
     button_underline.set_icon_name('format-text-underline-symbolic');
     toolbar.insert(button_underline, 2);
-    /*
-    Signals
-    */
+
+    button_bold.connect('clicked', Lang.bind(this, this._on_button_clicked, this.tag_bold));
+    button_italic.connect('clicked', Lang.bind(this, this._on_button_clicked, this.tag_italic));
+    button_underline.connect('clicked', Lang.bind(this, this._on_button_clicked, this.tag_underline));
+
     toolbar.insert(new Gtk.SeparatorToolItem(), 3);
     let radio_justifyleft = new Gtk.RadioToolButton();
     radio_justifyleft.set_icon_name('format-justify-left-symbolic');
@@ -82,9 +85,12 @@ const TextViewWidnow = new Lang.Class({
     let radio_justifyfill = Gtk.RadioToolButton.new_from_widget(radio_justifyleft);
     radio_justifyfill.set_icon_name('format-justify-fill-symbolic');
     toolbar.insert(radio_justifyfill, 7);
-    /*
-    Signals
-    */
+
+    radio_justifyleft.connect('toggled', Lang.bind(this, this._on_justify_toggled, Gtk.Justification.LEFT));
+    radio_justifycenter.connect('toggled', Lang.bind(this, this._on_justify_toggled, Gtk.Justification.CENTER));
+    radio_justifyright.connect('toggled', Lang.bind(this, this._on_justify_toggled, Gtk.Justification.RIGHT));
+    radio_justifyfill.connect('toggled', Lang.bind(this, this._on_justify_toggled, Gtk.Justification.FILL));
+
     toolbar.insert(new Gtk.SeparatorToolItem(), 8);
     let button_clear = new Gtk.ToolButton();
     button_clear.set_icon_name('edit-clear-symbolic');
@@ -174,10 +180,10 @@ const TextViewWidnow = new Lang.Class({
     let radio_wrapnone = Gtk.RadioButton.new_with_label_from_widget(null, 'No Wrapping');
     this.grid.attach(radio_wrapnone, 0, 3, 1, 1);
 
-    let radio_wrapchar = Gtk.RadioButton.new_with_label_from_widget(radio_wrapnone, "Character Wrapping");
+    let radio_wrapchar = Gtk.RadioButton.new_with_label_from_widget(radio_wrapnone, 'Character Wrapping');
     this.grid.attach_next_to(radio_wrapchar, radio_wrapnone, Gtk.PositionType.RIGHT, 1, 1);
 
-    let radio_wrapword = Gtk.RadioButton.new_with_label_from_widget(radio_wrapnone, "Word Wrapping");
+    let radio_wrapword = Gtk.RadioButton.new_with_label_from_widget(radio_wrapnone, 'Word Wrapping');
     this.grid.attach_next_to(radio_wrapword, radio_wrapchar, Gtk.PositionType.RIGHT, 1, 1);
 
     radio_wrapnone.connect('toggled', Lang.bind(this, this._on_wrap_toggled, Gtk.WrapMode.NONE));
@@ -199,6 +205,19 @@ const TextViewWidnow = new Lang.Class({
 
   _on_wrap_toggled: function (widget, mode) {
     this.textview.set_wrap_mode(mode);
+  },
+
+  _on_button_clicked: function (widget, tag) {
+    let bounds = this.textbuffer.get_selection_bounds();
+    if(bounds[0]) {
+      let start = bounds[1];
+      let end = bounds[2];
+      this.textbuffer.apply_tag(tag, start, end);
+    }
+  },
+
+  _on_justify_toggled: function (widget, justification) {
+    this.textview.set_justification(justification);
   },
 
   run: function () {
