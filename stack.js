@@ -10,7 +10,7 @@ const StackWindow = new Lang.Class ({
   _init: function (args)
   {
     this.parent({
-      title: 'Stack Demo',
+      title: 'Stack Example',
       type: Gtk.WindowType.TOPLEVEL,
       window_position: Gtk.WindowPosition.CENTER
     });

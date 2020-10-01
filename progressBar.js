@@ -37,13 +37,12 @@ const ProgressBarWindow = new Lang.Class ({
     button.connect ('toggled', Lang.bind (this, this._onRightToLeftToggled));
     vbox.pack_start (button, true, true, 0);
 
-    this.timeout_id = MainLoop.timeout_add (50, Lang.bind (this, this._onTimeOut), null);
-    this.activity_mode = false;
+    this.timeout_id = MainLoop.timeout_add (1000, Lang.bind (this, this._onTimeOut), null);    this.activity_mode = false;
   },
 
   _onShowTextToggled: function (button) {
     let show_text = button.get_active ();
-    let text = show_text  ? 'some text' : null;
+    let text = show_text  ? 'hello' : null;
 
     this.progressbar.set_text (text);
     this.progressbar.set_show_text (show_text);
